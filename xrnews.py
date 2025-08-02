@@ -2,7 +2,6 @@ from flask import Flask, jsonify
 import requests
 from datetime import datetime
 from dateutil.relativedelta import relativedelta, MO
-from newspaper import Article
 import os
 
 app = Flask(__name__)
@@ -37,16 +36,8 @@ def get_articles():
     response.raise_for_status()
     return response.json()['articles']
 
-# === CLEAN CONTENT ===
-def extract_article_content(url):
-    try:
-        article = Article(url)
-        article.download()
-        article.parse()
-        return article.text.strip()
-    except Exception as e:
-        print(f"Error parsing {url}: {e}")
-        return None
+
+
 
 # === FLASK ROUTE ===
 @app.route("/articles")
@@ -60,20 +51,22 @@ def articles():
         source = item['source']['name']
         url = item['url']
         published_at = item['publishedAt'][:10]
-        content = extract_article_content(url)
 
-        if content:
-            print(f"📰 {title} ({source})")
-            output.append({
-                'title': title,
-                'source': source,
-                'url': url,
-                'date': published_at,
-                'content': content
-            })
+        # ✅ Use NewsAPI summary
+        content = item.get('description') or item.get('content') or "No summary available"
+
+        print(f"📰 {title} ({source})")
+        output.append({
+            'title': title,
+            'source': source,
+            'url': url,
+            'date': published_at,
+            'content': content
+        })
 
     return jsonify(output)
 
 # === ENTRY POINT ===
 if __name__ == "__main__":
     app.run(debug=True)
+
