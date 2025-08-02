@@ -3,11 +3,16 @@ import requests
 from datetime import datetime
 from dateutil.relativedelta import relativedelta, MO
 import os
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)  # 👈 Enable CORS for all routes
+
 
 from dotenv import load_dotenv
 load_dotenv()
 
-app = Flask(__name__)
+
 
 # === CONFIG ===
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")

@@ -4,3 +4,4 @@ newspaper3k
 python-dateutil
 gunicorn
 python-dotenv
+flask-cors
