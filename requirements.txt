@@ -1,0 +1,4 @@
+Flask
+requests
+newspaper3k
+python-dateutil
