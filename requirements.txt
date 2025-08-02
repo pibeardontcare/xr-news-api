@@ -3,3 +3,4 @@ requests
 newspaper3k
 python-dateutil
 gunicorn
+python-dotenv
