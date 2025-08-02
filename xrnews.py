@@ -43,9 +43,32 @@ def get_articles():
 
 
 # === FLASK ROUTE ===
+
 @app.route("/articles")
 def articles():
+    # === Fresh DATE RANGE on every call ===
+    today = datetime.today()
+    last_monday = today + relativedelta(weekday=MO(-1))
+    from_date = last_monday.strftime('%Y-%m-%d')
+    to_date = today.strftime('%Y-%m-%d')
+
     print(f"📅 Fetching XR/AI news from {from_date} to {to_date}...")
+
+    def get_articles():
+        url = f'https://newsapi.org/v2/everything'
+        params = {
+            'q': QUERY,
+            'from': from_date,
+            'to': to_date,
+            'sortBy': 'publishedAt',
+            'language': LANGUAGE,
+            'pageSize': MAX_ARTICLES,
+            'apiKey': NEWS_API_KEY
+        }
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return response.json()['articles']
+
     raw_articles = get_articles()
     output = []
 
@@ -54,8 +77,6 @@ def articles():
         source = item['source']['name']
         url = item['url']
         published_at = item['publishedAt'][:10]
-
-        # ✅ Use NewsAPI summary
         content = item.get('description') or item.get('content') or "No summary available"
 
         print(f"📰 {title} ({source})")
@@ -68,6 +89,7 @@ def articles():
         })
 
     return jsonify(output)
+
 
 # === ENTRY POINT ===
 if __name__ == "__main__":
