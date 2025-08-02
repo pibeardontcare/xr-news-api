@@ -18,7 +18,7 @@ load_dotenv()
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 if not NEWS_API_KEY:
     raise ValueError("⚠️ NEWS_API_KEY environment variable not set.")
-QUERY = '"XR" OR "Extended Reality" OR "AR" OR "VR" AND "AI"'
+QUERY = '("XR" OR "Extended Reality" OR "AR" OR "VR" AND "AI") -addicted2success.com'
 LANGUAGE = 'en'
 MAX_ARTICLES = 20
 
